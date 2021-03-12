@@ -350,3 +350,5 @@ MigrationBackup/
 .ionide/
 *.js
 SignMeUp/ClientSite/wwwroot/libs
+*.d.ts
+*.map
