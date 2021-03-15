@@ -3,6 +3,6 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "signmeup_rg" {
-  name     = "rg-signmeup-eastus"
+  name     = "osrglkjrsgseir"
   location = "East US"
 }
