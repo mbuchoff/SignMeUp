@@ -22,11 +22,6 @@ resource "azurerm_resource_group" "dev" {
   location = "East US"
 }
 
-resource "azurerm_resource_group" "devv" {
-  name     = "signmeup_devv"
-  location = "East US"
-}
-
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_app_service_plan" "dev" {
