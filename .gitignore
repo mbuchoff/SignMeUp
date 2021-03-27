@@ -351,3 +351,4 @@ MigrationBackup/
 SignMeUp/ClientSite/wwwroot/libs
 *.d.ts
 *.map
+SignMeUp/Client/ClientSite/wwwroot/libs

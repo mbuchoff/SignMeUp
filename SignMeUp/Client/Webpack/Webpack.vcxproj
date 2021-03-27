@@ -18,6 +18,9 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="webpack.config.js" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{F35134AF-6AB3-4EDD-9914-1BEB9192005A}</ProjectGuid>
@@ -86,9 +89,6 @@ npx webpack --mode=production --no-color</NMakeBuildCommandLine>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="..\clientsite\webpack.config.js" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
