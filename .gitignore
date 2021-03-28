@@ -347,8 +347,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+.terraform
+*.hcl
 *.js
 SignMeUp/ClientSite/wwwroot/libs
 *.d.ts
 *.map
 SignMeUp/Client/ClientSite/wwwroot/libs
+||||||| b5ec267
