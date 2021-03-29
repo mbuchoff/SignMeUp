@@ -349,8 +349,9 @@ MigrationBackup/
 .ionide/
 .terraform
 *.hcl
-*.js
-SignMeUp/ClientSite/wwwroot/libs
+SignMeUp/Client/ClientSite/wwwroot/**/*.js
+SignMeUp/Client/ClientSite/wwwroot/libs
 *.d.ts
 *.map
-SignMeUp/Client/ClientSite/wwwroot/libs
+SignMeUp/Vendor/VendorSite/wwwroot/**/*.js
+SignMeUp/Vendor/VendorSite/wwwroot/libs
