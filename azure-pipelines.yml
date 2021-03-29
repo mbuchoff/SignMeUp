@@ -6,7 +6,7 @@ pr:
 - '*'
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: window-latest
 
 variables:
   buildConfiguration: 'Release'
