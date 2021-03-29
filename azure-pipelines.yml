@@ -15,9 +15,13 @@ steps:
 - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
   submodules: recursive
 
-- script: npm install
+- script: npm install client
   displayName: npm install
   workingDirectory: SignMeUp/Client/ClientSite
+  
+- script: npm install vendor
+  displayName: npm install
+  workingDirectory: SignMeUp/Vendor/VendorSite
   
 - task: UseDotNet@2 
   displayName: ".NET Core 3.1.x"
