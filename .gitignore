@@ -6,7 +6,6 @@
 # User-specific files
 *.rsuser
 *.suo
-*.user
 *.userosscache
 *.sln.docstates
 
@@ -350,3 +349,8 @@ MigrationBackup/
 .ionide/
 .terraform
 *.hcl
+*.js
+SignMeUp/ClientSite/wwwroot/libs
+*.d.ts
+*.map
+SignMeUp/Client/ClientSite/wwwroot/libs
