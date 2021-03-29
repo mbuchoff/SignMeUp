@@ -6,7 +6,7 @@ pr:
 - '*'
 
 pool:
-  vmImage: window-latest
+  vmImage: windows-latest
 
 variables:
   buildConfiguration: 'Release'
