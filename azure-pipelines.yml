@@ -1,10 +1,9 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - main
+- 'SIG-2_Come-up-with-some-sort-of-stencil-page-for-setting-appointments'
+
+pr:
+- '*'
 
 pool:
   vmImage: ubuntu-latest
@@ -13,6 +12,38 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
-  workingDirectory: 'SignMeUp/Client/ClientSite'
+- checkout: self  # self represents the repo where the initial Pipelines YAML file was found
+  submodules: recursive
+
+- script: npm install
+  displayName: npm install
+  workingDirectory: SignMeUp/Client/ClientSite
+  
+- task: UseDotNet@2 
+  displayName: ".NET Core 3.1.x"
+  inputs:
+    version: '3.1.x'
+    packageType: sdk
+  
+- task: VSBuild@1
+  displayName: Build SignMeUp.sln
+  inputs:
+    solution: 'SignMeUp.sln'
+    platform: 'Any CPU'
+    configuration: '$(BuildConfiguration)'
+    maximumCpuCount: true
+
+- task: DotNetCoreCLI@2
+  displayName: Publish (DotNet)
+  inputs:
+    command: publish
+    projects: 'SignMeUp\Client\ClientSite.csproj'
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output SignMeUp\Client\Publish'
+    zipAfterPublish: True
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish (Artifact)
+  inputs:
+    pathtoPublish: 'SignMeUp\Client\Publish' 
+    artifactName: 'SignMeUp'
