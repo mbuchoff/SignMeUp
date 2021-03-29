@@ -28,7 +28,7 @@ steps:
 - task: VSBuild@1
   displayName: Build SignMeUp.sln
   inputs:
-    solution: 'SignMeUp.sln'
+    solution: 'SignMeUp\SignMeUp.sln'
     platform: 'Any CPU'
     configuration: '$(BuildConfiguration)'
     maximumCpuCount: true
