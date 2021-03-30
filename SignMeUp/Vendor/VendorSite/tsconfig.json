@@ -3,6 +3,8 @@
     "strict": true,
     "composite": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "ES6",
+    "moduleResolution": "Node"
   }
 }

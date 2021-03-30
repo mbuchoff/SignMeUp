@@ -34,6 +34,12 @@ module.exports = {
           "sass-loader",
         ],
       },
+
+      // https://webpack.js.org/loaders/css-loader/
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
     ],
   },
 
