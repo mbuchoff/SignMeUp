@@ -1,4 +1,4 @@
-﻿import Calendar, { ISchedule } from 'tui-calendar';
+﻿import Calendar, { IEventScheduleObject, ISchedule } from 'tui-calendar';
 import "tui-calendar/dist/tui-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css"
 
@@ -13,28 +13,38 @@ var cal = new Calendar('#calendar', {
     scheduleView: ['time']  // e.g. true, false, or ['allday', 'time'])
 });
 
-cal.createSchedules([
-    {
-       // id: '1',
-    //    calendarId: '1',
-        title: 'my schedule',
-        category: 'time',
-  //      dueDateClass: '',
-        start: '2021-04-02T22:30:00+09:00',
-        end: '2021-04-03T22:30:00+09:00',
-    },
-    {
-     //   id: '2',
-   //     calendarId: '1',
-        title: 'second schedule',
-        category: 'time',
-//        dueDateClass: '',
-        start: '2021-04-01T22:30:00+09:00',
-        end: '2021-04-02T22:30:00+09:00',
-    }
-]);
-
 cal.on('beforeCreateSchedule', function (event: ISchedule) {
     event.category = 'time';
     cal.createSchedules([event]);
+});
+
+let lastClickSchedule: ISchedule | null = null;
+cal.on('clickSchedule', function (event: IEventScheduleObject) {
+    var schedule = event.schedule;
+
+    if (lastClickSchedule) {
+        if (!lastClickSchedule.id) {
+            alert('sanity check fail, lastClickSchedule.id is null');
+        } else if (!lastClickSchedule.calendarId) {
+            alert('sanity check fail, lastClickSchedule.calendarId is null');
+        } else {
+            cal.updateSchedule(lastClickSchedule.id, lastClickSchedule.calendarId, {
+                isFocused: false
+            });
+        }
+    }
+
+    if (schedule.id == null) {
+        alert('sanity check fail, schedule.id is null');
+    } else if (schedule.calendarId == null) {
+        alert('sanity check fail, schedule.calendarId is null');
+    } else {
+        cal.updateSchedule(schedule.id, schedule.calendarId, {
+            isFocused: true
+        });
+    }
+
+    lastClickSchedule = schedule;
+    alert(`lastClickSchedule.id is ${lastClickSchedule.id}`);
+    // open detail view
 });
