@@ -13,9 +13,26 @@ var cal = new Calendar('#calendar', {
     scheduleView: ['time']  // e.g. true, false, or ['allday', 'time'])
 });
 
-cal.on('beforeCreateSchedule', function (event: ISchedule) {
+cal.on('beforeCreateSchedule', async function (event: ISchedule) {
     event.category = 'time';
     cal.createSchedules([event]);
+
+    let poco = { title: event.title };
+    let stringified = JSON.stringify(poco);
+    alert(stringified);
+
+    const formData = new FormData();
+    formData.append('title', "hello");
+
+    let result = await fetch('home/addschedule', {
+        method: 'POST',
+        body: formData,
+    })
+
+
+    if (!result.ok) {
+        alert('Adding probably failed. Try refreshing the page.')
+    }
 });
 
 let lastClickSchedule: ISchedule | null = null;
@@ -39,6 +56,7 @@ cal.on('clickSchedule', function (event: IEventScheduleObject) {
     } else if (schedule.calendarId == null) {
         alert('sanity check fail, schedule.calendarId is null');
     } else {
+        alert('event added2');
         cal.updateSchedule(schedule.id, schedule.calendarId, {
             isFocused: true
         });
