@@ -11,7 +11,6 @@ namespace VendorService.Models
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public string Title { get; set; }
-        public bool AllDay { get; set; }
         public Availability Availability { get; set; }
     }
 }
