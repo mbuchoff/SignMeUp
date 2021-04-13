@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 // If you use the default popups, use this.
 import 'tui-date-picker/dist/tui-date-picker.css';
 import 'tui-time-picker/dist/tui-time-picker.css';
+import { Schedulee } from './Model/Schedulee';
 
 var cal = new Calendar('#calendar', {
     useCreationPopup: true,
@@ -17,12 +18,19 @@ cal.on('beforeCreateSchedule', async function (event: ISchedule) {
     event.category = 'time';
     cal.createSchedules([event]);
 
-    let poco = { title: event.title };
-    let stringified = JSON.stringify(poco);
-    alert(stringified);
+    if (!event.title) {
+        alert("No title");
+        return;
+    }
 
     const formData = new FormData();
-    formData.append('title', "hello");
+
+    let poco = new Schedulee(event.title);
+
+    let key: keyof Schedulee;
+    for (key in poco) {
+        formData.append(key, poco[key]);
+    }
 
     let result = await fetch('home/addschedule', {
         method: 'POST',
