@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using VendorService.Models;
 
@@ -49,6 +50,10 @@ namespace ClientSite.Controllers
 
             var client = httpClientFactory.CreateClient("VendorService");
             var body = JsonConvert.SerializeObject(schedule);
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders
+                  .Accept
+                  .Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = await client.PostAsync("CalendarManagement/CreateSchedule", new StringContent(body));
             response = await client.PostAsync("CreateSchedule", new StringContent(body));
             response = await client.PostAsync("CalendarManagement", new StringContent(body));

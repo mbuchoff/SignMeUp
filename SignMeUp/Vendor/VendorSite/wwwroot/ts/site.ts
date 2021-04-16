@@ -32,10 +32,24 @@ cal.on('beforeCreateSchedule', async function (event: ISchedule) {
         return;
     }
 
+    if (!event.start) {
+        alert("No start");
+        return;
+    }
+
+    if (!event.end) {
+        alert("No end");
+        return;
+    }
+
     const formData = new FormData();
 
-    let poco = new Schedule(event.title, event.location,
-        event.state == 'Busy' ? Availability.Busy : Availability.Free);
+    let poco = new Schedule(
+        event.title,
+        event.location,
+        event.state == 'Busy' ? Availability.Busy : Availability.Free,
+        new Date(event.start.valueOf() as number),
+        new Date(event.end.valueOf() as number));
 
     let key: keyof Schedule;
     for (key in poco) {
