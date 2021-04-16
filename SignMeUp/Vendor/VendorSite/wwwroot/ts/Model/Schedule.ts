@@ -1,6 +1,4 @@
-﻿import { DateType } from "tui-calendar";
-
-export enum Availability { Busy, Free };
+﻿export enum Availability { Busy, Free };
 
 export class Schedule {
     constructor(

@@ -41,9 +41,7 @@ cal.on('beforeCreateSchedule', async function (event: ISchedule) {
         alert("No end");
         return;
     }
-
-    const formData = new FormData();
-
+    
     let poco = new Schedule(
         event.title,
         event.location,

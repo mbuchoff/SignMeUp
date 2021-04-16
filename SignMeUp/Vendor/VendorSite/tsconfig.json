@@ -5,6 +5,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "module": "ES6",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "noUnusedLocals": true
   }
 }
