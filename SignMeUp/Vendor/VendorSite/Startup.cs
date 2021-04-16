@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Net.Http.Headers;
 
 namespace ClientSite
 {
@@ -25,7 +26,6 @@ namespace ClientSite
             {
                 httpClient.BaseAddress = new Uri(Configuration["VendorServiceUrl"]);
                 httpClient.DefaultRequestHeaders.Add("Accept", "*/*");
-                httpClient.DefaultRequestHeaders.Add("ContentType", "application/json");
             });
         }
 

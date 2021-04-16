@@ -51,14 +51,10 @@ cal.on('beforeCreateSchedule', async function (event: ISchedule) {
         new Date(event.start.valueOf() as number),
         new Date(event.end.valueOf() as number));
 
-    let key: keyof Schedule;
-    for (key in poco) {
-        formData.append(key, JSON.stringify(poco[key]));
-    }
-
     let result = await fetch('home/addschedule', {
         method: 'POST',
-        body: formData,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        body: JSON.stringify(poco),
     })
 
 
