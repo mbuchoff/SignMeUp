@@ -142,6 +142,7 @@ resource "random_password" "sqlserver_client" {
 
 resource "random_password" "sqlserver_vendor" {
   length = 16
+  override_special = "!@#$%^_"
 }
 
 resource "azurerm_sql_server" "client" {
@@ -177,3 +178,33 @@ resource "azurerm_sql_database" "vendor" {
   server_name         = azurerm_sql_server.vendor.name
   edition             = "Free"
 }
+
+resource "random_password" "db_vendor" {
+  length = 16
+  override_special = "!@#$%^_"
+}
+
+resource "null_resource" "create-vendor-db-user" {
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      $ErrorActionPreference = "Stop"
+      
+      $myIp = $(Invoke-RestMethod http://ipinfo.io/json).ip
+      az sql server firewall-rule create --resource-group signmeup_dev --server ${azurerm_sql_server.vendor.name} -n temp_createUser --start-ip-address $myIp --end-ip-address $myIp
+      Invoke-Sqlcmd -Query 'SELECT @@version' -ServerInstance ${azurerm_sql_server.vendor.fully_qualified_domain_name} -Username ${random_string.sqlserver_vendor_user.result} -Password ${random_password.sqlserver_vendor.result}
+      az sql server firewall-rule delete --n temp_createUser -g ${azurerm_resource_group.dev.name} -s ${azurerm_sql_server.vendor.name}
+    EOT
+    interpreter = ["PowerShell", "-Command"]
+  }
+
+  depends_on = [azurerm_sql_database.vendor]
+}
+
+#CREATE LOGIN mike WITH PASSWORD = 'password';
+#USE db-signmeup-vendor-dev-centralus;  
+#CREATE USER michael FOR LOGIN mike
+
+#ALTER ROLE  db_datareader ADD MEMBER michael
+#ALTER ROLE  db_datawriter ADD MEMBER michael
+#GO
