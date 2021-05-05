@@ -189,10 +189,17 @@ resource "null_resource" "create-vendor-db-user" {
   provisioner "local-exec" {
     command = <<-EOT
       $ErrorActionPreference = "Stop"
-      
+
+      $queryMaster = "CREATE LOGIN mike WITH PASSWORD = 'Password123!';"
+      $queryDb = "CREATE USER michael FOR LOGIN mike
+                  ALTER ROLE  db_datareader ADD MEMBER michael
+                  ALTER ROLE  db_datawriter ADD MEMBER michael
+                  GO"
+
       $myIp = $(Invoke-RestMethod http://ipinfo.io/json).ip
       az sql server firewall-rule create --resource-group signmeup_dev --server ${azurerm_sql_server.vendor.name} -n temp_createUser --start-ip-address $myIp --end-ip-address $myIp
-      Invoke-Sqlcmd -Query 'SELECT @@version' -ServerInstance ${azurerm_sql_server.vendor.fully_qualified_domain_name} -Username ${random_string.sqlserver_vendor_user.result} -Password ${random_password.sqlserver_vendor.result}
+      Invoke-Sqlcmd -Query $queryMaster -ServerInstance ${azurerm_sql_server.vendor.fully_qualified_domain_name} -Username ${random_string.sqlserver_vendor_user.result} -Password ${random_password.sqlserver_vendor.result}
+      Invoke-Sqlcmd -Query $queryDb -Database db-signmeup-vendor-dev-centralus -ServerInstance ${azurerm_sql_server.vendor.fully_qualified_domain_name} -Username ${random_string.sqlserver_vendor_user.result} -Password ${random_password.sqlserver_vendor.result}
       az sql server firewall-rule delete --n temp_createUser -g ${azurerm_resource_group.dev.name} -s ${azurerm_sql_server.vendor.name}
     EOT
     interpreter = ["PowerShell", "-Command"]
