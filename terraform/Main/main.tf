@@ -54,6 +54,8 @@ resource "azurerm_app_service" "client_service" {
     "XDT_MicrosoftApplicationInsights_Mode"           = "recommended"
     "XDT_MicrosoftApplicationInsights_PreemptSdk"     = "disabled"
   }
+
+  identity { type = "SystemAssigned" }
 }
 
 resource "azurerm_app_service" "client_site" {
@@ -103,6 +105,8 @@ resource "azurerm_app_service" "vendor_service" {
     "XDT_MicrosoftApplicationInsights_Mode"           = "recommended"
     "XDT_MicrosoftApplicationInsights_PreemptSdk"     = "disabled"
   }
+
+  identity { type = "SystemAssigned" }
 }
 
 resource "azurerm_app_service" "vendor_site" {
@@ -198,10 +202,49 @@ resource "null_resource" "create-vendor-db-user" {
   depends_on = [azurerm_sql_server.vendor, azurerm_sql_database.vendor]
 }
 
-#CREATE LOGIN mike WITH PASSWORD = 'password';
-#USE db-signmeup-vendor-dev-centralus;  
-#CREATE USER michael FOR LOGIN mike
+resource "azurerm_key_vault" "vendor" {
+  name                        = "kv-smu-vendor-dev-eastus"
+  location                    = azurerm_resource_group.dev.location
+  resource_group_name         = azurerm_resource_group.dev.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
 
-#ALTER ROLE  db_datareader ADD MEMBER michael
-#ALTER ROLE  db_datawriter ADD MEMBER michael
-#GO
+  sku_name = "standard"
+}
+
+resource "azurerm_key_vault" "client" {
+  name                        = "kv-smu-client-dev-eastus"
+  location                    = azurerm_resource_group.dev.location
+  resource_group_name         = azurerm_resource_group.dev.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+
+  sku_name = "standard"
+}
+
+resource "azurerm_key_vault_access_policy" "me_accessing_vendor" {
+  key_vault_id = azurerm_key_vault.vendor.id
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+    key_permissions = [ "List", "Get" ]
+    secret_permissions = [ "List", "Get", "Set" ]
+    storage_permissions = [ "List", "Get" ]
+}
+
+resource "azurerm_key_vault_access_policy" "client" {
+  key_vault_id = azurerm_key_vault.client.id
+  tenant_id = azurerm_app_service.client_service.identity.0.tenant_id
+  object_id = azurerm_app_service.client_service.identity.0.principal_id
+  secret_permissions = [ "List", "Get" ]
+}
+
+resource "azurerm_key_vault_access_policy" "vendor" {
+  key_vault_id = azurerm_key_vault.vendor.id
+  tenant_id = azurerm_app_service.vendor_service.identity.0.tenant_id
+  object_id = azurerm_app_service.vendor_service.identity.0.principal_id
+  secret_permissions = [ "List", "Get" ]
+}
+
+resource "azurerm_key_vault_secret" "vendor_dbConnectionString" {
+  name         = "DbConnectionString"
+  value        = "Server=${azurerm_sql_server.vendor.fully_qualified_domain_name};Database=${azurerm_sql_database.vendor.name};User ID=vendor_app_service;Password=${random_password.db_vendor.result};Trusted_Connection=False;Encrypt=True;"
+  key_vault_id = azurerm_key_vault.vendor.id
+}
