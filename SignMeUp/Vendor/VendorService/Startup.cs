@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using SafemarkGoAdminTool;
 
 namespace VendorService
 {
@@ -30,6 +30,7 @@ namespace VendorService
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
+            services.AddSingleton<AzureKeyVaultService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
