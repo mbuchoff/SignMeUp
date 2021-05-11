@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VendorService.Models
+namespace Common.Models
 {
     public enum Availability { Busy, Free };
 

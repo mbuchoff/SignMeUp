@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SafemarkGoAdminTool;
 using System.Threading.Tasks;
-using VendorService.Models;
+using Common.Models;
 
 namespace VendorService.Controllers
 {
@@ -9,17 +9,15 @@ namespace VendorService.Controllers
     [Route("[controller]/[action]")]
     public class CalendarManagementController : ControllerBase
     {
-        private readonly AzureKeyVaultService azureKeyVaultService;
-
-        public CalendarManagementController(AzureKeyVaultService azureKeyVaultService)
+        public CalendarManagementController()
         {
-            this.azureKeyVaultService = azureKeyVaultService;
+
         }
 
         [HttpPost]
-        public async Task CreateSchedule([FromBody]Schedule schedule)
+        public void CreateSchedule(/*[FromBody]Schedule schedule*/)
         {
-            var doesThisWork = await azureKeyVaultService.DbConnectionString;
+
         }
     }
 }
