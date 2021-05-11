@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VendorService.Models;
+using SafemarkGoAdminTool;
+using System.Threading.Tasks;
+using Common.Models;
+using Database;
 
 namespace VendorService.Controllers
 {
@@ -7,10 +10,18 @@ namespace VendorService.Controllers
     [Route("[controller]/[action]")]
     public class CalendarManagementController : ControllerBase
     {
-        [HttpPost]
-        public void CreateSchedule([FromBody]Schedule schedule)
-        {
+        private readonly VendorDbContext db;
 
+        public CalendarManagementController(VendorDbContext db)
+        {
+            this.db = db;
+        }
+
+        [HttpPost]
+        public async Task CreateSchedule([FromBody]Schedule schedule)
+        {
+            await db.Schedules.AddAsync(schedule);
+            await db.SaveChangesAsync();
         }
     }
 }

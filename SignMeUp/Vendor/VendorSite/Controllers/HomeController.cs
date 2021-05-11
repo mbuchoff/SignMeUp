@@ -11,21 +11,17 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using VendorService.Models;
+using Common.Models;
 
 namespace ClientSite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IConfiguration configuration;
 
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            this._logger = logger;
             this.httpClientFactory = httpClientFactory;
-            this.configuration = configuration;
         }
 
         public IActionResult Index()

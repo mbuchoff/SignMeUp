@@ -1,10 +1,13 @@
+using Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using SafemarkGoAdminTool;
+using System;
 
 namespace VendorService
 {
@@ -27,9 +30,16 @@ namespace VendorService
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.ReportApiVersions = true;
             });
+            services.AddDbContext<VendorDbContext>((services, options) =>
+            {
+                var keyvault = services.GetRequiredService<AzureKeyVaultService>();
+                var connectionString = keyvault.DbConnectionString.Result;
+                options.UseSqlServer(connectionString);
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
+            services.AddSingleton<AzureKeyVaultService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
