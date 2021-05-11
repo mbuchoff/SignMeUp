@@ -10,7 +10,9 @@ namespace SafemarkGoAdminTool
     {
         public AzureKeyVaultService(IConfiguration configuration)
         {
-            var client = new SecretClient(vaultUri: new Uri(uriString: configuration["KeyVaultUrl"]), new DefaultAzureCredential(options: new DefaultAzureCredentialOptions
+            var client = new SecretClient(vaultUri: new Uri(
+                uriString: configuration["KeyVaultUrl"] ?? "https://kv-smu-vendor-dev-eastus.vault.azure.net/"),
+                new DefaultAzureCredential(options: new DefaultAzureCredentialOptions
             {
                 ExcludeSharedTokenCacheCredential = true,
                 ExcludeVisualStudioCredential = true

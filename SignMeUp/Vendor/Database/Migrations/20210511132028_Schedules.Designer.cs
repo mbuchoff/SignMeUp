@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Migrations
 {
     [DbContext(typeof(VendorDbContext))]
-    [Migration("20210511123910_Schedules")]
+    [Migration("20210511132028_Schedules")]
     partial class Schedules
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

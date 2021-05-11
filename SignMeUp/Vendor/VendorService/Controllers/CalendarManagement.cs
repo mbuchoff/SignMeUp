@@ -2,6 +2,7 @@
 using SafemarkGoAdminTool;
 using System.Threading.Tasks;
 using Common.Models;
+using Database;
 
 namespace VendorService.Controllers
 {
@@ -9,15 +10,18 @@ namespace VendorService.Controllers
     [Route("[controller]/[action]")]
     public class CalendarManagementController : ControllerBase
     {
-        public CalendarManagementController()
-        {
+        private readonly VendorDbContext db;
 
+        public CalendarManagementController(VendorDbContext db)
+        {
+            this.db = db;
         }
 
         [HttpPost]
-        public void CreateSchedule(/*[FromBody]Schedule schedule*/)
+        public async Task CreateSchedule([FromBody]Schedule schedule)
         {
-
+            await db.Schedules.AddAsync(schedule);
+            await db.SaveChangesAsync();
         }
     }
 }

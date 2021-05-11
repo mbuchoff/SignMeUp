@@ -13,7 +13,6 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "KeyVaultUrl": "https://kv-smu-vendor-dev-eastus.vault.azure.net/",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
