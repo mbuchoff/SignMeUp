@@ -49,5 +49,15 @@ namespace ClientSite.Controllers
             HttpResponseMessage response = await client.PostAsync("CalendarManagement/CreateSchedule", new StringContent(body, Encoding.UTF8, "application/json"));
             return response.IsSuccessStatusCode;
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<Schedule>> GetSchedules(DateTime start, DateTime end)
+        {
+            var client = httpClientFactory.CreateClient("VendorService");
+            HttpResponseMessage response = await client.GetAsync($"CalendarManagement/GetSchedules?start={JsonConvert.SerializeObject(start).Replace("\"", "")}&end={JsonConvert.SerializeObject(end).Replace("\"", "")}");
+            response.EnsureSuccessStatusCode();
+            var responseBody = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<IEnumerable<Schedule>>(responseBody);
+        }
     }
 }

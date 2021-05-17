@@ -14,6 +14,21 @@ var cal = new Calendar('#calendar', {
     scheduleView: ['time']  // e.g. true, false, or ['allday', 'time'])
 });
 
+let endDate = cal.getDateRangeEnd().toDate();
+endDate.setDate(endDate.getDate() + 1);
+let startDate = cal.getDateRangeStart().toDate();
+
+$.get("/home/getSchedules", {
+    start: startDate.toJSON(),
+    end: endDate.toJSON()
+}).done((schedules: Schedule[]) => cal.createSchedules(schedules.map<ISchedule>(schedule => ({
+    title: schedule.title,
+    category: 'time',
+    state: schedule.availability == Availability.Busy ? 'Busy' : 'Free',
+    start: schedule.start,
+    end: schedule.end,
+}))));
+
 cal.on('beforeCreateSchedule', async function (event: ISchedule) {
     event.category = 'time';
     cal.createSchedules([event]);
