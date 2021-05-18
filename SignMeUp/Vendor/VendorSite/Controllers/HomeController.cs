@@ -1,14 +1,11 @@
 ﻿using ClientSite.Models;
+using Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Models;
@@ -54,7 +51,7 @@ namespace ClientSite.Controllers
         public async Task<IEnumerable<Schedule>> GetSchedules(DateTime start, DateTime end)
         {
             var client = httpClientFactory.CreateClient("VendorService");
-            HttpResponseMessage response = await client.GetAsync($"CalendarManagement/GetSchedules?start={JsonConvert.SerializeObject(start).Replace("\"", "")}&end={JsonConvert.SerializeObject(end).Replace("\"", "")}");
+            HttpResponseMessage response = await client.GetAsync($"CalendarManagement/GetSchedules?start={start.ToJsonString()}&end={end.ToJsonString()}");
             response.EnsureSuccessStatusCode();
             var responseBody = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<IEnumerable<Schedule>>(responseBody);
