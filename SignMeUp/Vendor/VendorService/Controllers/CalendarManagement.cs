@@ -3,6 +3,10 @@ using SafemarkGoAdminTool;
 using System.Threading.Tasks;
 using Common.Models;
 using Database;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System;
 
 namespace VendorService.Controllers
 {
@@ -23,5 +27,9 @@ namespace VendorService.Controllers
             await db.Schedules.AddAsync(schedule);
             await db.SaveChangesAsync();
         }
+
+        [HttpGet]
+        public async Task<IEnumerable<Schedule>> GetSchedules(DateTime start, DateTime end) => 
+            await db.Schedules.Where(x => x.End >= start && x.Start <= end).ToListAsync();
     }
 }
