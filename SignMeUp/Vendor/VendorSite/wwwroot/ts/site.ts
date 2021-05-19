@@ -1,4 +1,4 @@
-﻿import Calendar, { IEventScheduleObject, ISchedule } from 'tui-calendar';
+﻿import Calendar, { ISchedule } from 'tui-calendar';
 import "tui-calendar/dist/tui-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css"
 
@@ -8,8 +8,11 @@ import 'tui-time-picker/dist/tui-time-picker.css';
 import { Availability, Schedule } from './Model/Schedule';
 
 async function main() {
+    let scheduleId = 0;
+
     var cal = new Calendar('#calendar', {
         useCreationPopup: true,
+        useDetailPopup: true,
         defaultView: 'week', // set 'week' or 'day'
         taskView: true,  // e.g. true, false, or ['task', 'milestone'])
         scheduleView: ['time']  // e.g. true, false, or ['allday', 'time'])
@@ -34,6 +37,7 @@ async function main() {
 
     let schedules = await result.json() as Schedule[];
     cal.createSchedules(schedules.map<ISchedule>(schedule => ({
+        id: String(scheduleId++),
         title: schedule.title,
         category: 'time',
         state: schedule.availability == Availability.Busy ? 'Busy' : 'Free',
@@ -86,38 +90,6 @@ async function main() {
         if (!result.ok) {
             alert('Adding probably failed. Try refreshing the page.')
         }
-    });
-
-    let lastClickSchedule: ISchedule | null = null;
-    cal.on('clickSchedule', function (event: IEventScheduleObject) {
-        var schedule = event.schedule;
-
-        if (lastClickSchedule) {
-            if (!lastClickSchedule.id) {
-                alert('sanity check fail, lastClickSchedule.id is null');
-            } else if (!lastClickSchedule.calendarId) {
-                alert('sanity check fail, lastClickSchedule.calendarId is null');
-            } else {
-                cal.updateSchedule(lastClickSchedule.id, lastClickSchedule.calendarId, {
-                    isFocused: false
-                });
-            }
-        }
-
-        if (schedule.id == null) {
-            alert('sanity check fail, schedule.id is null');
-        } else if (schedule.calendarId == null) {
-            alert('sanity check fail, schedule.calendarId is null');
-        } else {
-            alert('event added2');
-            cal.updateSchedule(schedule.id, schedule.calendarId, {
-                isFocused: true
-            });
-        }
-
-        lastClickSchedule = schedule;
-        alert(`lastClickSchedule.id is ${lastClickSchedule.id}`);
-        // open detail view
     });
 }
 
