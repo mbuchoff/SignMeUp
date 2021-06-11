@@ -10,18 +10,8 @@ namespace Database.Migrations
                 name: "ExternalId",
                 table: "Schedules",
                 type: "int",
-                nullable: false);
-
-            migrationBuilder.AddColumn<int>(
-                name: "AvailabilityLookupId",
-                table: "Schedules",
-                type: "int",
-                nullable: false);
-
-            migrationBuilder.RenameColumn(
-                name: "Availability",
-                table: "Schedules",
-                newName: "ExternalId");
+                nullable: false,
+                defaultValueSql: "abs(checksum(NewId()) % 2147483647)");
 
             migrationBuilder.CreateTable(
                 name: "AvailabilityLookups",
@@ -46,6 +36,15 @@ namespace Database.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[] { 2, "Busy" });
 
+
+
+            migrationBuilder.AddColumn<int>(
+                name: "AvailabilityLookupId",
+                table: "Schedules",
+                type: "int",
+                nullable: false,
+                defaultValue: 1);
+
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_AvailabilityLookupId",
                 table: "Schedules",
@@ -62,7 +61,7 @@ namespace Database.Migrations
             migrationBuilder.Sql("UPDATE [dbo].[Schedules] SET AvailabilityLookupId = 1 WHERE Availability = 1");
             migrationBuilder.Sql("UPDATE [dbo].[Schedules] SET AvailabilityLookupId = 2 WHERE Availability = 0");
 
-            migrationBuilder.DropColumn("Schedules", "Availability");
+            migrationBuilder.DropColumn("Availability", "Schedules");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
