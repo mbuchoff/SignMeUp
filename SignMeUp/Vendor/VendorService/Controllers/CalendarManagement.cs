@@ -42,7 +42,7 @@ namespace VendorService.Controllers
         [HttpGet]
         public async Task<IEnumerable<ExternalModels.Schedule>> GetSchedules(DateTime start, DateTime end)
         {
-            var dbSchedules = await db.Schedules.Where(x => x.End >= start && x.Start <= end).ToListAsync();
+            var dbSchedules = await db.Schedules.Include(x => x.AvailabilityLookup).Where(x => x.End >= start && x.Start <= end).ToListAsync();
             return dbSchedules.Select(schedule =>
             {
                 var availability = schedule.AvailabilityLookup.Name == DatabaseModels.AvailabilityLookup.BUSY_NAME ? ExternalModels.Availability.Busy : ExternalModels.Availability.Free;
@@ -53,8 +53,8 @@ namespace VendorService.Controllers
                     Title = schedule.Title,
                     Location = schedule.Location,
                     Availability = availability,
-                    Start = schedule.Start,
-                    End = schedule.End,
+                    Start = DateTime.SpecifyKind(schedule.Start, DateTimeKind.Utc),
+                    End = DateTime.SpecifyKind(schedule.End, DateTimeKind.Utc),
                 };
             });
         }
