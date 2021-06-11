@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SafemarkGoAdminTool;
 using System.Threading.Tasks;
-using Common.Models;
+using ExternalModels = Common.Models;
+using DatabaseModels = Database.Models;
 using Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -22,14 +22,41 @@ namespace VendorService.Controllers
         }
 
         [HttpPost]
-        public async Task CreateSchedule([FromBody]Schedule schedule)
+        public async Task CreateSchedule([FromBody]ExternalModels.Schedule schedule)
         {
-            await db.Schedules.AddAsync(schedule);
+            var availabilityStr = schedule.Availability == ExternalModels.Availability.Free ? "Free" : "Busy";
+            var availabilityLookup = await db.AvailabilityLookups.FirstAsync(x => x.Name == availabilityStr);
+            await db.Schedules.AddAsync(new DatabaseModels.Schedule
+            {
+                ExternalId = schedule.Id,
+                Title = schedule.Title,
+                Location = schedule.Location,
+                AvailabilityLookup = availabilityLookup,
+                Start = schedule.Start,
+                End = schedule.End,
+            });
+
             await db.SaveChangesAsync();
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Schedule>> GetSchedules(DateTime start, DateTime end) => 
-            await db.Schedules.Where(x => x.End >= start && x.Start <= end).ToListAsync();
+        public async Task<IEnumerable<ExternalModels.Schedule>> GetSchedules(DateTime start, DateTime end)
+        {
+            var dbSchedules = await db.Schedules.Include(x => x.AvailabilityLookup).Where(x => x.End >= start && x.Start <= end).ToListAsync();
+            return dbSchedules.Select(schedule =>
+            {
+                var availability = schedule.AvailabilityLookup.Name == DatabaseModels.AvailabilityLookup.BUSY_NAME ? ExternalModels.Availability.Busy : ExternalModels.Availability.Free;
+
+                return new ExternalModels.Schedule
+                {
+                    Id = schedule.ExternalId,
+                    Title = schedule.Title,
+                    Location = schedule.Location,
+                    Availability = availability,
+                    Start = DateTime.SpecifyKind(schedule.Start, DateTimeKind.Utc),
+                    End = DateTime.SpecifyKind(schedule.End, DateTimeKind.Utc),
+                };
+            });
+        }
     }
 }

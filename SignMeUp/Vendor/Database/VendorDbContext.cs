@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Common.Models;
+﻿using Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database
 {
@@ -10,6 +10,14 @@ namespace Database
 
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AvailabilityLookup>().HasData(
+                new AvailabilityLookup { Id = 1, Name = "Free" },
+                new AvailabilityLookup { Id = 2, Name = "Busy" });
+        }
+
         public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<AvailabilityLookup> AvailabilityLookups { get; set; }
     }
 }

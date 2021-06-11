@@ -33,8 +33,7 @@ namespace VendorService
             services.AddDbContext<VendorDbContext>((services, options) =>
             {
                 var keyvault = services.GetRequiredService<AzureKeyVaultService>();
-                var connectionString = keyvault.DbConnectionString.Result;
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(keyvault.DbConnectionString.Result);
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
