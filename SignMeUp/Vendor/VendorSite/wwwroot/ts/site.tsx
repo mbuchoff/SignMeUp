@@ -7,6 +7,17 @@ import 'tui-date-picker/dist/tui-date-picker.css';
 import 'tui-time-picker/dist/tui-time-picker.css';
 import { Availability, Schedule } from './Model/Schedule';
 
+import * as React from 'react';
+import * as ReactDom from "react-dom";
+
+function App() {
+    const [state, setState] = React.useState("BUTTON");
+
+    return <button onClick={() => setState("CLICKED")}>{state}</button>;
+}
+
+ReactDom.render(<App />, document.getElementById("root"));
+
 async function main() {
     let scheduleId = 0;
 

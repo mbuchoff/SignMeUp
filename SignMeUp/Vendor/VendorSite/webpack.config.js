@@ -6,7 +6,7 @@ module.exports = {
     cache: { type: 'filesystem' },
 
     entry: {
-        'site': './wwwroot/ts/site.ts',
+        'site': './wwwroot/ts/site.tsx',
     },
     devtool: 'inline-source-map',
     output: {

@@ -6,6 +6,7 @@
     "sourceMap": true,
     "module": "ES6",
     "moduleResolution": "Node",
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "jsx": "react"
   }
 }
